@@ -33,14 +33,14 @@ const signup = async (req, res) => {
             email
         });
 
-        // sendEmail({
-        //     to: newUser.email,
-        //     subject: "Welcome 🎉",
-        //     html: `
-        //       <h2>Welcome ${newUser.name}</h2>
-        //       <p>Your account was created successfully.</p>
-        //     `,
-        // });
+        sendEmail({
+            to: newUser.email,
+            subject: "Welcome 🎉",
+            html: `
+              <h2>Welcome ${newUser.name}</h2>
+              <p>Your account was created successfully.</p>
+            `,
+        });
 
         res.status(201).json({
             message: "User created successfully",

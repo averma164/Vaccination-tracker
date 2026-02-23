@@ -63,8 +63,11 @@ const getPendingVaccinesForComingMonth = async (req, res) => {
         }
 
         const now = new Date();
+        now.setHours(0, 0, 0, 0); // start of today
+
         const nextMonth = new Date();
-        nextMonth.setDate(now.getDate() + 30);
+        nextMonth.setDate(nextMonth.getDate() + 30);
+        nextMonth.setHours(23, 59, 59, 999); // end of day
 
         const pendingVaccines = await UserVaccine.find({
             user: userId,
@@ -82,8 +85,9 @@ const getPendingVaccinesForComingMonth = async (req, res) => {
         });
 
     } catch (err) {
-        res.status(500).json({ message: "Error fetching pending vaccines: " + err.message });
+        res.status(500).json({
+            message: "Error fetching pending vaccines: " + err.message
+        });
     }
-}
-
+};
 export { getAllUsers, registerChild, getPendingVaccinesForComingMonth };
