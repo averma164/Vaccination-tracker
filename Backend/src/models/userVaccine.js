@@ -2,19 +2,9 @@ import mongoose from "mongoose";
 
 const userVaccineSchema = new mongoose.Schema({
 
-  user: {
+  babyInfo: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true
-  },
-
-  babyName: {
-    type: String,
-    required: true
-  },
-
-  dateOfBirth: {
-    type: Date,
+    ref: "BabyInfo",
     required: true
   },
 
