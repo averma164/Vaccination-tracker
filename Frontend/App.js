@@ -11,6 +11,7 @@ import BasicInfoScreen from './src/screens/BasicInfoScreen';
 import ReminderScreen from './src/screens/ReminderScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
+import DocumentScreen from './src/screens/DocumentScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -60,6 +61,11 @@ export default function App() {
                     <Stack.Screen
                         name="Profile"
                         component={ProfileScreen}
+                        options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                        name="Document"
+                        component={DocumentScreen}
                         options={{ headerShown: false }}
                     />
                 </Stack.Navigator>

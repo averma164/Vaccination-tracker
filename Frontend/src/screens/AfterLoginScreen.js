@@ -244,7 +244,7 @@ export default function AfterLoginScreen({ navigation }) {
 
                 <TouchableOpacity
                     style={styles.navItem}
-                    onPress={() => Alert.alert('Info', 'Documents - coming soon!')}
+                    onPress={() => navigation.navigate('Document')}
                 >
                     <FontAwesome name="file-o" size={22} color="#2d8a6a" />
                     <Text style={styles.navText}>Documents</Text>
