@@ -1,6 +1,6 @@
 import express from 'express';
 import { authMiddleware, authorizeRole } from '../middlewares/authMiddleware.js';
-import { allBaby } from '../controller/userController.js';
+import { allBaby, updateProfile, getProfile, registerBaby, updateBaby } from '../controller/userController.js';
 import upload from '../middlewares/upload.js';
 import User from '../models/user.js';
 import cloudinary from '../config/cloudinary.js';
@@ -13,6 +13,20 @@ userRouter.get(
     authMiddleware,
     authorizeRole('user', 'admin'),
     allBaby
+);
+
+userRouter.post(
+    '/baby',
+    authMiddleware,
+    authorizeRole('user', 'admin'),
+    registerBaby
+);
+
+userRouter.put(
+    '/baby/:id',
+    authMiddleware,
+    authorizeRole('user', 'admin'),
+    updateBaby
 );
 
 
@@ -125,5 +139,17 @@ userRouter.delete(
     }
 );
 
+
+userRouter.put(
+    '/profile',
+    authMiddleware,
+    updateProfile
+);
+
+userRouter.get(
+    '/profile',
+    authMiddleware,
+    getProfile
+);
 
 export default userRouter;

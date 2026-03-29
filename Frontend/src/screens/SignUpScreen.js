@@ -62,12 +62,12 @@ export default function SignUpScreen({ route, navigation }) {
                     if (loginData.user && loginData.user.name) {
                         await AsyncStorage.setItem('userName', loginData.user.name);
                     }
-                    console.log('Auto-login successful, redirecting to dashboard...');
+                    console.log('Auto-login successful, redirecting to profile form...');
                     showFlash('Account created and logged in automatically!', 'success');
                     setTimeout(() => {
                         navigation.reset({
                             index: 0,
-                            routes: [{ name: 'AfterLogin' }],
+                            routes: [{ name: 'ProfileForm' }],
                         });
                     }, 800);
                 } else {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
     View,
     Text,
@@ -14,6 +14,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { apiGet } from '../config/apiRequest';
 import { useFlash } from '../context/FlashContext';
+import { useFocusEffect } from '@react-navigation/native';
 import { AfterLoginStyles as styles } from "../styles/AfterLoginStyles";
 
 export default function AfterLoginScreen({ navigation }) {
@@ -34,29 +35,31 @@ export default function AfterLoginScreen({ navigation }) {
         { age: '14 Weeks', vaccine: 'Hepatitis B-3', status: 'Pending' },
     ]);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                setLoading(true);
-                const name = await AsyncStorage.getItem('userName');
-                const token = await AsyncStorage.getItem('userToken');
-                if (name) setUserName(name);
+    useFocusEffect(
+        useCallback(() => {
+            const fetchData = async () => {
+                try {
+                    setLoading(true);
+                    const name = await AsyncStorage.getItem('userName');
+                    const token = await AsyncStorage.getItem('userToken');
+                    if (name) setUserName(name);
 
-                if (token) {
-                    const { response, data } = await apiGet('/user/all-baby', token);
-                    if (response.ok && data.babyInfo && data.babyInfo.length > 0) {
-                        setChildInfo(data.babyInfo[0]); // Display first child
+                    if (token) {
+                        const { response, data } = await apiGet('/user/all-baby', token);
+                        if (response.ok && data.babyInfo && data.babyInfo.length > 0) {
+                            setChildInfo(data.babyInfo[0]); // Display first child
+                        }
                     }
+                    console.log('Fetched AfterLogin data:', { name, hasToken: !!token, babies: data?.babyInfo?.length });
+                } catch (error) {
+                    console.error('Error fetching data:', error);
+                } finally {
+                    setLoading(false);
                 }
-                console.log('Fetched AfterLogin data:', { name, hasToken: !!token, babies: data?.babyInfo?.length });
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchData();
-    }, []);
+            };
+            fetchData();
+        }, [])
+    );
 
     const handleLogout = async () => {
         try {
@@ -144,18 +147,18 @@ export default function AfterLoginScreen({ navigation }) {
                             <View style={styles.childInfoItem}>
                                 <Text style={styles.childInfoLabel}>Age</Text>
                                 <Text style={styles.childInfoValue}>
-                                    {Math.floor((new Date() - new Date(childInfo.dateOfBirth)) / (1000 * 60 * 60 * 24 * 30.44))} Months
+                                    {(() => { const months = Math.floor((new Date() - new Date(childInfo.dateOfBirth)) / (1000 * 60 * 60 * 24 * 30.44)); return months < 24 ? `${months} Mo` : `${Math.floor(months / 12)} Yrs`; })()}
                                 </Text>
                             </View>
                             <View style={styles.childInfoItem}>
                                 <Text style={styles.childInfoLabel}>Blood Group</Text>
-                                <Text style={styles.childInfoValue}>B+</Text>
+                                <Text style={styles.childInfoValue}>{childInfo.bloodGroup || 'N/A'}</Text>
                             </View>
                         </View>
                     ) : (
                         <TouchableOpacity
                             style={{ padding: 20, alignItems: 'center' }}
-                            onPress={() => showFlash('Registering a child is an upcoming feature!', 'info')}
+                            onPress={() => navigation.navigate('RegisterBaby')}
                         >
                             <Text style={{ color: '#2d8a6a', fontWeight: 'bold' }}>+ Register Your Child</Text>
                         </TouchableOpacity>
