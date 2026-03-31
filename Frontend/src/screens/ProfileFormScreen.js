@@ -139,7 +139,7 @@ export default function ProfileFormScreen({ route, navigation }) {
 
     return (
         <SafeAreaView style={styles.safeArea}>
-            <StatusBar barStyle="dark-content" backgroundColor="#f8fafc" />
+            <StatusBar barStyle="dark-content" backgroundColor="#FFF0F5" />
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={styles.container}
@@ -170,7 +170,7 @@ export default function ProfileFormScreen({ route, navigation }) {
                             ) : (
                                 <>
                                     <TouchableOpacity onPress={() => setShowDobPicker(true)} style={[styles.input, { justifyContent: 'center' }]}>
-                                        <Text style={{ fontSize: 16, color: dob ? '#0f172a' : '#94a3b8' }}>{dob || "Select your date of birth"}</Text>
+                                        <Text style={{ fontSize: 16, color: dob ? '#3D1A26' : '#DEB8C8' }}>{dob || "Select your date of birth"}</Text>
                                     </TouchableOpacity>
                                     {showDobPicker && (
                                         <DateTimePicker
@@ -200,7 +200,7 @@ export default function ProfileFormScreen({ route, navigation }) {
                             ) : (
                                 <>
                                     <TouchableOpacity onPress={() => setShowLmpPicker(true)} style={[styles.input, { justifyContent: 'center' }]}>
-                                        <Text style={{ fontSize: 16, color: lmp ? '#0f172a' : '#94a3b8' }}>{lmp || "Select LMP Date"}</Text>
+                                        <Text style={{ fontSize: 16, color: lmp ? '#3D1A26' : '#DEB8C8' }}>{lmp || "Select LMP Date"}</Text>
                                     </TouchableOpacity>
                                     {showLmpPicker && (
                                         <DateTimePicker
@@ -218,8 +218,8 @@ export default function ProfileFormScreen({ route, navigation }) {
                         </View>
                         <View style={styles.inputContainer}>
                             <Text style={styles.label}>Expected Due Date (Auto-calculated)</Text>
-                            <View style={[styles.input, { justifyContent: 'center', backgroundColor: '#f1f5f9' }]}>
-                                <Text style={{ fontSize: 16, color: dueDate ? '#0f172a' : '#94a3b8' }}>{dueDate || "Determined by LMP Date"}</Text>
+                            <View style={[styles.input, { justifyContent: 'center', backgroundColor: '#FFE4EF' }]}>
+                                <Text style={{ fontSize: 16, color: dueDate ? '#3D1A26' : '#DEB8C8' }}>{dueDate || "Determined by LMP Date"}</Text>
                             </View>
                         </View>
                         <View style={styles.inputContainer}>
@@ -236,7 +236,7 @@ export default function ProfileFormScreen({ route, navigation }) {
                         </View>
                         <View style={[styles.inputContainer, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }]}>
                             <Text style={styles.label}>High-Risk Pregnancy?</Text>
-                            <Switch value={highRisk} onValueChange={setHighRisk} trackColor={{ false: "#cbd5e1", true: "#3b82f6" }} />
+                            <Switch value={highRisk} onValueChange={setHighRisk} trackColor={{ false: "#FFD6E8", true: "#F43F8A" }} thumbColor={highRisk ? "#fff" : "#fff"} />
                         </View>
 
                         <Text style={styles.sectionTitle}>Medical Information</Text>
@@ -273,51 +273,53 @@ export default function ProfileFormScreen({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
-    safeArea: { flex: 1, backgroundColor: '#f8fafc' },
+    safeArea: { flex: 1, backgroundColor: '#FFF0F5' },
     container: { flex: 1 },
     scrollContainer: { flexGrow: 1, paddingHorizontal: 24, paddingTop: 40, paddingBottom: 24 },
     scrollContainerSmall: { paddingHorizontal: 20, paddingTop: 24, paddingBottom: 20 },
     headerContainer: { marginBottom: 32 },
-    title: { fontSize: 28, fontWeight: '800', color: '#0f172a', marginBottom: 8 },
-    subtitle: { fontSize: 16, color: '#64748b', lineHeight: 24 },
-    sectionTitle: { fontSize: 20, fontWeight: '700', color: '#1e293b', marginTop: 10, marginBottom: 16 },
+    title: { fontSize: 28, fontWeight: '800', color: '#3D1A26', marginBottom: 8 },
+    subtitle: { fontSize: 16, color: '#C48BA0', lineHeight: 24 },
+    sectionTitle: { fontSize: 20, fontWeight: '700', color: '#3D1A26', marginTop: 10, marginBottom: 16, borderLeftWidth: 4, borderLeftColor: '#F43F8A', paddingLeft: 10 },
     formContainer: { marginBottom: 30 },
     inputContainer: { marginBottom: 16 },
-    label: { fontSize: 14, fontWeight: '600', color: '#334155', marginBottom: 8 },
+    label: { fontSize: 14, fontWeight: '600', color: '#A07080', marginBottom: 8 },
     input: {
         backgroundColor: '#ffffff',
-        borderWidth: 1,
-        borderColor: '#e2e8f0',
-        borderRadius: 12,
+        borderWidth: 1.5,
+        borderColor: '#FFD6E8',
+        borderRadius: 14,
         paddingHorizontal: 16,
         paddingVertical: 14,
         fontSize: 16,
-        color: '#0f172a',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.05,
-        shadowRadius: 2,
+        color: '#3D1A26',
+        shadowColor: '#F43F8A',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.06,
+        shadowRadius: 4,
         elevation: 2,
     },
     submitButton: {
-        backgroundColor: '#3b82f6',
-        borderRadius: 12,
+        backgroundColor: '#F43F8A',
+        borderRadius: 14,
         paddingVertical: 16,
         alignItems: 'center',
         marginTop: 12,
-        shadowColor: '#3b82f6',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 8,
-        elevation: 4,
+        shadowColor: '#F43F8A',
+        shadowOffset: { width: 0, height: 6 },
+        shadowOpacity: 0.35,
+        shadowRadius: 12,
+        elevation: 5,
     },
     submitButtonText: { color: '#ffffff', fontSize: 16, fontWeight: '700', letterSpacing: 0.5 },
     skipButton: {
-        backgroundColor: 'transparent',
-        borderRadius: 12,
+        backgroundColor: '#FFE4EF',
+        borderRadius: 14,
         paddingVertical: 16,
         alignItems: 'center',
         marginTop: 12,
+        borderWidth: 1.5,
+        borderColor: '#FFB3D0',
     },
-    skipButtonText: { color: '#64748b', fontSize: 16, fontWeight: '600' }
+    skipButtonText: { color: '#F43F8A', fontSize: 16, fontWeight: '600' }
 });

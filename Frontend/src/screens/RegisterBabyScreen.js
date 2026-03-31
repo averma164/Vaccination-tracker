@@ -93,7 +93,7 @@ export default function RegisterBabyScreen({ route, navigation }) {
         <SafeAreaView style={styles.safeArea}>
             <View style={styles.header}>
                 <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-                    <FontAwesome name="chevron-left" size={14} color="#e8703a" />
+                    <FontAwesome name="chevron-left" size={14} color="#F43F8A" />
                     <Text style={styles.backText}>Back</Text>
                 </TouchableOpacity>
                 <Text style={styles.headerTitle}>{isEditMode ? 'Edit Child' : 'Register Child'}</Text>
@@ -121,7 +121,7 @@ export default function RegisterBabyScreen({ route, navigation }) {
                     ) : (
                         <>
                             <TouchableOpacity onPress={() => setShowDobPicker(true)} style={[styles.input, { justifyContent: 'center' }]}>
-                                <Text style={{ fontSize: 16, color: dateOfBirth ? '#0f172a' : '#94a3b8' }}>{dateOfBirth || "Select Date of Birth"}</Text>
+                                <Text style={{ fontSize: 16, color: dateOfBirth ? '#3D1A26' : '#DEB8C8' }}>{dateOfBirth || "Select Date of Birth"}</Text>
                             </TouchableOpacity>
                             {showDobPicker && <DateTimePicker value={dateOfBirth ? new Date(dateOfBirth) : new Date()} mode="date" display="default" maximumDate={new Date()} onChange={(e, d) => { if (Platform.OS !== 'ios') setShowDobPicker(false); handleDateChange(e, d, setDateOfBirth, setShowDobPicker); }} />}
                         </>
@@ -148,7 +148,7 @@ export default function RegisterBabyScreen({ route, navigation }) {
                     ) : (
                         <>
                             <TouchableOpacity onPress={() => setShowMcdPicker(true)} style={[styles.input, { justifyContent: 'center' }]}>
-                                <Text style={{ fontSize: 16, color: motherConceiveDate ? '#0f172a' : '#94a3b8' }}>{motherConceiveDate || "Select Conception Date"}</Text>
+                                <Text style={{ fontSize: 16, color: motherConceiveDate ? '#3D1A26' : '#DEB8C8' }}>{motherConceiveDate || "Select Conception Date"}</Text>
                             </TouchableOpacity>
                             {showMcdPicker && <DateTimePicker value={motherConceiveDate ? new Date(motherConceiveDate) : new Date()} mode="date" display="default" onChange={(e, d) => { if (Platform.OS !== 'ios') setShowMcdPicker(false); handleDateChange(e, d, setMotherConceiveDate, setShowMcdPicker); }} />}
                         </>
@@ -164,24 +164,24 @@ export default function RegisterBabyScreen({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
-    safeArea: { flex: 1, backgroundColor: '#f8fafc' },
-    header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 16, backgroundColor: '#ffffff', borderBottomWidth: 1, borderBottomColor: '#f1f5f9' },
+    safeArea: { flex: 1, backgroundColor: '#FFF0F5' },
+    header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 16, backgroundColor: '#ffffff', borderBottomWidth: 1, borderBottomColor: '#FFD6E8' },
     backButton: { flexDirection: 'row', alignItems: 'center', width: 60 },
-    backText: { color: '#e8703a', fontSize: 16, marginLeft: 4, fontWeight: '500' },
-    headerTitle: { fontSize: 18, fontWeight: '700', color: '#1e293b' },
+    backText: { color: '#F43F8A', fontSize: 16, marginLeft: 4, fontWeight: '600' },
+    headerTitle: { fontSize: 18, fontWeight: '700', color: '#3D1A26' },
     container: { padding: 24, paddingBottom: 48 },
     headerContainer: { marginBottom: 24 },
-    title: { fontSize: 24, fontWeight: '800', color: '#0f172a', marginBottom: 6 },
-    subtitle: { fontSize: 14, color: '#64748b' },
-    sectionLabel: { fontSize: 13, fontWeight: '700', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 16, marginTop: 8 },
+    title: { fontSize: 24, fontWeight: '800', color: '#3D1A26', marginBottom: 6 },
+    subtitle: { fontSize: 14, color: '#C48BA0' },
+    sectionLabel: { fontSize: 13, fontWeight: '700', color: '#C48BA0', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 16, marginTop: 8 },
     inputContainer: { marginBottom: 20 },
-    label: { fontSize: 14, fontWeight: '600', color: '#334155', marginBottom: 8 },
-    input: { backgroundColor: '#ffffff', borderWidth: 1, borderColor: '#e2e8f0', borderRadius: 12, paddingHorizontal: 16, paddingVertical: 14, fontSize: 16, color: '#0f172a' },
+    label: { fontSize: 14, fontWeight: '600', color: '#A07080', marginBottom: 8 },
+    input: { backgroundColor: '#ffffff', borderWidth: 1.5, borderColor: '#FFD6E8', borderRadius: 14, paddingHorizontal: 16, paddingVertical: 14, fontSize: 16, color: '#3D1A26', shadowColor: '#F43F8A', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 4, elevation: 2 },
     selectorRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-    selectorChip: { paddingHorizontal: 16, paddingVertical: 9, borderRadius: 20, backgroundColor: '#ffffff', borderWidth: 1.5, borderColor: '#e2e8f0' },
-    selectorChipActive: { backgroundColor: '#3b82f6', borderColor: '#3b82f6' },
-    selectorChipText: { fontSize: 14, fontWeight: '600', color: '#64748b' },
+    selectorChip: { paddingHorizontal: 16, paddingVertical: 9, borderRadius: 20, backgroundColor: '#ffffff', borderWidth: 1.5, borderColor: '#FFD6E8' },
+    selectorChipActive: { backgroundColor: '#F43F8A', borderColor: '#F43F8A' },
+    selectorChipText: { fontSize: 14, fontWeight: '600', color: '#C48BA0' },
     selectorChipTextActive: { color: '#ffffff' },
-    submitButton: { backgroundColor: '#3b82f6', borderRadius: 12, paddingVertical: 16, alignItems: 'center', marginTop: 24 },
+    submitButton: { backgroundColor: '#F43F8A', borderRadius: 14, paddingVertical: 16, alignItems: 'center', marginTop: 24, shadowColor: '#F43F8A', shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.35, shadowRadius: 12, elevation: 5 },
     submitButtonText: { color: '#ffffff', fontSize: 16, fontWeight: '700' }
 });
