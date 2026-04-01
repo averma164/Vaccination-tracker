@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
-    // 🔹 Basic Info
     name: {
         type: String,
         required: true
@@ -24,50 +23,48 @@ const userSchema = new mongoose.Schema({
     },
     role: {
         type: String,
+        required: true,
         enum: ["admin", "user"],
         default: "user"
     },
-
-    address: String,
-    dob: Date,
-    emergencyContact: String,
-
-    // 🍼 Pregnancy Details
-    pregnancy: {
-        lmp: Date,
-        dueDate: Date,
-        trimester: {
-            type: Number,
-            enum: [1, 2, 3]
-        },
-        previousPregnancies: {
-            type: Number,
-            default: 0
-        },
-        highRisk: {
-            type: Boolean,
-            default: false
-        },
-        bloodGroup: String
+    address: {
+        type: String,
+        default: ""
     },
-
-    // 🏥 Medical Info
+    dob: {
+        type: Date
+    },
+    emergencyContact: {
+        type: String,
+        default: ""
+    },
     medical: {
         conditions: [String],
         allergies: [String],
         complications: [String],
         medications: [String]
     },
+    pregnancy: {
+        lmp: Date,
+        dueDate: Date,
+        trimester: Number,
+        bloodGroup: String,
+        previousPregnancies: { type: Number, default: 0 },
+        highRisk: { type: Boolean, default: false }
+    },
 
-    // 📄 Documents (your existing)
     documents: [
         {
             url: {
                 type: String,
                 required: true
             },
-            public_id: String,
-            name: String,
+            public_id: {
+                type: String
+            },
+            name: {
+                type: String
+            },
             uploadedAt: {
                 type: Date,
                 default: Date.now

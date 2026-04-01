@@ -110,7 +110,9 @@ export default function BeforeLoginScreen({ navigation }) {
                     {/* FOOTER */}
                     <View style={landingStyles.footer}>
                         <Text style={landingStyles.footerText}>Data Secured • Pediatric Approved</Text>
-                        <Text style={landingStyles.footerText}>Terms And Conditions</Text>
+                        <TouchableOpacity onPress={() => navigation.navigate('Terms')} activeOpacity={0.7}>
+                            <Text style={[landingStyles.footerText, { textDecorationLine: 'underline' }]}>Terms And Conditions</Text>
+                        </TouchableOpacity>
                         <Text style={landingStyles.footerTextSmall}>© 2026 Healthy Mom & Baby</Text>
                     </View>
                 </View>

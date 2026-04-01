@@ -1,4 +1,6 @@
 import BabyInfo from "../models/babyInfo.js";
+import UserVaccine from "../models/userVaccine.js";
+import Vaccine from "../models/masterVaccine.js";
 import User from "../models/user.js";
 
 const allBaby = async (req, res) => {
@@ -14,106 +16,144 @@ const allBaby = async (req, res) => {
     }
 }
 
-const updateProfile = async (req, res) => {
+const getUserVaccines = async (req, res) => {
     try {
-        const userId = req.user.id;
-        const updatableFields = ["address", "dob", "emergencyContact", "pregnancy", "medical"];
-        const updateData = {};
+        const { babyInfoId } = req.query;
+        if (!babyInfoId) return res.status(400).json({ message: "babyInfoId is required" });
         
-        for (const field of updatableFields) {
-            if (req.body[field] !== undefined) {
-                updateData[field] = req.body[field];
-            }
+        // Ensure this baby belongs to the requesting user
+        const baby = await BabyInfo.findById(babyInfoId);
+        if (!baby || baby.user.toString() !== req.user.id) {
+            return res.status(403).json({ message: "Unauthorized access to this baby's records" });
         }
-
-        const updatedUser = await User.findByIdAndUpdate(
-            userId,
-            { $set: updateData },
-            { new: true, runValidators: true }
-        ).select("-password -__v");
-
-        if (!updatedUser) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        res.status(200).json({
-            message: "Profile updated successfully",
-            user: updatedUser
-        });
+        
+        const vaccines = await UserVaccine.find({
+            babyInfo: babyInfoId
+        }).populate("vaccine").sort({ scheduledDate: 1 });
+        
+        res.status(200).json(vaccines);
     } catch (error) {
-        console.error("Profile update error:", error);
-        res.status(500).json({ message: "Error updating profile: " + error.message });
+        res.status(500).json({ message: error.message });
     }
-};
+}
 
-const getProfile = async (req, res) => {
+const getUserProfile = async (req, res) => {
     try {
-        const userId = req.user.id;
-        const user = await User.findById(userId).select("-password -__v");
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
+        const user = await User.findById(req.user.id).select("-password -documents");
+        if (!user) return res.status(404).json({ message: "User not found" });
         res.status(200).json(user);
     } catch (error) {
-        console.error("Fetch profile error:", error);
-        res.status(500).json({ message: "Error fetching profile: " + error.message });
+        res.status(500).json({ message: error.message });
     }
-};
+}
 
-const registerBaby = async (req, res) => {
+const updateUserProfile = async (req, res) => {
     try {
-        const { babyName, dateOfBirth, motherConceiveDate, bloodGroup, gender } = req.body;
-        const userId = req.user.id;
+        const { address, dob, emergencyContact, medical, pregnancy } = req.body;
+        const user = await User.findById(req.user.id);
+        if (!user) return res.status(404).json({ message: "User not found" });
 
-        const existingBaby = await BabyInfo.findOne({ user: userId });
-        if (existingBaby) {
-            return res.status(400).json({ message: "Only one child can be registered per account." });
-        }
+        if (address !== undefined) user.address = address;
+        if (dob !== undefined) user.dob = dob;
+        if (emergencyContact !== undefined) user.emergencyContact = emergencyContact;
+        if (medical !== undefined) user.medical = medical;
+        if (pregnancy !== undefined) user.pregnancy = pregnancy;
+
+        await user.save();
+        res.status(200).json({ message: "Profile updated successfully", user });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+const registerMyChild = async (req, res) => {
+    try {
+        const { babyName, dateOfBirth, gender, bloodGroup, motherConceiveDate } = req.body;
+        const userId = req.user.id;
 
         if (!babyName || !dateOfBirth) {
-            return res.status(400).json({ message: "Baby name and Date of Birth are mandatory." });
+            return res.status(400).json({ message: "babyName and dateOfBirth are required" });
         }
 
-        const newBaby = new BabyInfo({
+        const babyInfo = new BabyInfo({
             user: userId,
             babyName,
-            dateOfBirth,
+            dateOfBirth: new Date(dateOfBirth),
             gender: gender || null,
             bloodGroup: bloodGroup || null,
-            motherConceiveDate: motherConceiveDate || null
+            motherConceiveDate: motherConceiveDate ? new Date(motherConceiveDate) : null
+        });
+        await babyInfo.save();
+
+        const defaultVaccines = await Vaccine.find({ isDefault: true });
+        const dob = new Date(dateOfBirth);
+        const userVaccines = defaultVaccines.map(vaccine => {
+            const scheduledDate = new Date(dob);
+            scheduledDate.setDate(dob.getDate() + (vaccine.ageInWeeks * 7));
+            return {
+                babyInfo: babyInfo._id,
+                vaccine: vaccine._id,
+                scheduledDate,
+                status: "Pending"
+            };
         });
 
-        await newBaby.save();
-        res.status(201).json({ message: "Baby registered successfully!", baby: newBaby });
-    } catch (error) {
-        console.error("Register baby error:", error);
-        res.status(500).json({ message: "Error registering baby: " + error.message });
-    }
-};
-
-const updateBaby = async (req, res) => {
-    try {
-        const { babyName, dateOfBirth, motherConceiveDate, bloodGroup, gender } = req.body;
-        const babyId = req.params.id;
-        const userId = req.user.id;
-
-        const baby = await BabyInfo.findOne({ _id: babyId, user: userId });
-        if (!baby) {
-            return res.status(404).json({ message: "Child not found." });
+        if (userVaccines.length > 0) {
+            await UserVaccine.insertMany(userVaccines);
         }
 
-        if (babyName) baby.babyName = babyName;
-        if (dateOfBirth) baby.dateOfBirth = dateOfBirth;
-        if (gender !== undefined) baby.gender = gender || null;
-        if (bloodGroup !== undefined) baby.bloodGroup = bloodGroup || null;
-        if (motherConceiveDate !== undefined) baby.motherConceiveDate = motherConceiveDate || null;
+        res.status(201).json({
+            message: `Child ${babyName} registered and ${userVaccines.length} vaccines scheduled`,
+            babyInfo
+        });
 
-        await baby.save();
-        res.status(200).json({ message: "Child updated successfully!", baby });
     } catch (error) {
-        console.error("Update baby error:", error);
-        res.status(500).json({ message: "Error updating baby: " + error.message });
+        res.status(500).json({ message: error.message });
     }
-};
+}
 
-export { allBaby, updateProfile, getProfile, registerBaby, updateBaby };
+const updateMyChild = async (req, res) => {
+    try {
+        const { babyId } = req.params;
+        const { babyName, dateOfBirth, gender, bloodGroup, motherConceiveDate } = req.body;
+        
+        const babyInfo = await BabyInfo.findById(babyId);
+        if (!babyInfo) return res.status(404).json({ message: "Child not found" });
+        if (babyInfo.user.toString() !== req.user.id) return res.status(403).json({ message: "Unauthorized" });
+
+        if (babyName) babyInfo.babyName = babyName;
+        if (dateOfBirth) babyInfo.dateOfBirth = new Date(dateOfBirth);
+        if (gender !== undefined) babyInfo.gender = gender;
+        if (bloodGroup !== undefined) babyInfo.bloodGroup = bloodGroup;
+        if (motherConceiveDate !== undefined) babyInfo.motherConceiveDate = motherConceiveDate ? new Date(motherConceiveDate) : null;
+
+        await babyInfo.save();
+        res.status(200).json({ message: "Child updated successfully", babyInfo });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+const setUserVaccineCompleted = async (req, res) => {
+    try {
+        const { userVaccineId } = req.body;
+        if (!userVaccineId) return res.status(400).json({ message: "userVaccineId is required" });
+
+        const userVaccine = await UserVaccine.findById(userVaccineId).populate('babyInfo');
+        if (!userVaccine) return res.status(404).json({ message: "Vaccine record not found" });
+
+        // Ensure user owns this baby
+        if (userVaccine.babyInfo.user.toString() !== req.user.id) {
+            return res.status(403).json({ message: "Unauthorized access" });
+        }
+
+        userVaccine.status = "Completed";
+        await userVaccine.save();
+
+        res.status(200).json({ message: "Vaccine marked as completed successfully", userVaccine });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+export { allBaby, getUserVaccines, getUserProfile, updateUserProfile, registerMyChild, updateMyChild, setUserVaccineCompleted };

@@ -18,19 +18,18 @@ const babyInfoSchema = new mongoose.Schema({
         required: true
     },
 
+    motherConceiveDate: {
+        type: Date,
+        default: null
+    },
+
     gender: {
         type: String,
-        enum: ["Male", "Female", "Other"],
         default: null
     },
 
     bloodGroup: {
         type: String,
-        default: null
-    },
-
-    motherConceiveDate: {
-        type: Date,
         default: null
     }
 
